@@ -29,11 +29,17 @@ def alert():
 @app.get("/")
 def read_root():
     return "Welcome to FastAPI!"
-
+idx=0
 @app.get("/hello/{id}")
 def say_hello_by_id(id: int):
     greetings = {1: "Sangameshwar", 2: "Rithik", 3: "Santhosh"}
     name = greetings.get(id, "Guest")
+    if name=="Guest" :
+        greetings(id)=f"Guest{idx}"
+        idx=idx+1
+        return f"Hello, New user {idx} ! It is currently {current_time}, {time_of_day}."
+        
+
     
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
