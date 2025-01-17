@@ -18,7 +18,7 @@ jobs:
     - name: Set up Docker credentials
       env:
         DOCKER_USERNAME: "sangam01"
-        DOCKER_PASSWORD: "dckr_pat_aldTuY7nODTZls4rRyP9cZl1iew"
+        DOCKER_PASSWORD: "dckr_pat_dY9xb_2RBYYELe_XogkVyjYDCNY"
       run: |
         echo $DOCKER_USERNAME
         echo $DOCKER_PASSWORD
