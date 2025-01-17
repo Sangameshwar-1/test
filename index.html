@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Web Interface</title>
+</head>
+<body>
+    <h1>Welcome to FastAPI Web Interface</h1>
+    <div>
+        <h2>Root Endpoint</h2>
+        <button onclick="fetchRoot()">Fetch Root</button>
+        <pre id="rootResult"></pre>
+    </div>
+    <div>
+        <h2>Hello Endpoint</h2>
+        <input type="number" id="id" placeholder="Enter your id:">
+        <button onclick="fetchHello()">Fetch Hello</button>
+        <pre id="helloResult"></pre>
+    </div>
+
+    <script>
+        const baseUrl = 'https://test-production-6336.up.railway.app/'; // Replace with your Railway URL
+
+        function fetchRoot() {
+            fetch(`${baseUrl}/`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('rootResult').innerText = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('rootResult').innerText = 'Error fetching root endpoint';
+                });
+        }
+
+        function fetchHello() {
+            const id = document.getElementById('id').value;
+            fetch(`${baseUrl}/hello/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('helloResult').innerText = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('helloResult').innerText = 'Error fetching hello endpoint';
+                });
+        }
+    </script>
+</body>
+</html>
