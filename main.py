@@ -34,8 +34,7 @@ def read_root():
 def say_hello_by_id(id: int):
     greetings = {1: "Sangameshwar", 2: "Rithik", 3: "Santhosh"}
     name = greetings.get(id, "Guest")
-    if id == 1:
-        alert()
+    
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     if 5 <= now.hour < 12:
