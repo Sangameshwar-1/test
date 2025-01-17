@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
-from twilio.rest import Client  # Ensure you have twilio installed
+from twilio.rest import Client
 
 app = FastAPI()
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update with your domain if needed
+    allow_origins=["*"],  # Update with specific origin if needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
