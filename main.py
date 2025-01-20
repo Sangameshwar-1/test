@@ -24,6 +24,6 @@ def say_hello_by_id(id: int):
     return f"Hello, {name}!"
 @app.get("/details/{id}")
 def say_datails(id: int):
-    details={1:["sangameshwar,sale]}
+    details={1:["sangameshwar","sale"]}
     deatail=details.get(id,"guest")
     return deatail 
