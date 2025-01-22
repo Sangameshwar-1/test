@@ -17,6 +17,9 @@
         <input type="number" id="id" placeholder="Enter your id:">
         <button onclick="fetchHello()">Fetch Hello</button>
         <pre id="helloResult"></pre>
+        <input id="ask" placeholder="Promt here: ">
+        <button onclick="fetchask()">Ask</button>
+        <pre id="ans"></pre>
     </div>
 
     <script>
@@ -48,6 +51,22 @@
                 document.getElementById('helloResult').innerText = 'Please enter a valid ID';
             }
         }
+        function fetchask() {
+            const pr=document.getElementById('ask').value;
+            if(pr){
+                fetch('${baseurl}/ask')
+                    .then(response => response.json())
+                .then(data => {
+                    document.getElementById('ans').innertext = JSON.stringify(data,null,2);
+                })
+                .catch(error => {
+                    document.getElementById('ans').innerText = 'Errror' ;
+                });
+            }
+            else{
+                document.getElementById('ans').innerText = 'Nothing' ;
+            }
+    }
     </script>
 </body>
 </html>
