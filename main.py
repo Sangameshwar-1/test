@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import openai
+import gemini
 
 app = FastAPI()
 
@@ -29,17 +29,14 @@ def say_details(id: int):
     detail = details.get(id, "guest")
     return detail
 
-openai.api_key = "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"
+gemini.api_key = "AIzaSyCi-GoXnRJVeb6Di-d-6wT1NWcKH-Khj7M"  # Updated API key
 
 @app.get("/ask/{pr}")
 def ask(pr: str):
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": pr}
-            ]
+        response = gemini.Completion.create(
+            query=pr,
+            max_tokens=5
         )
         return response.choices[0].message['content'].strip()
     except Exception as e:
