@@ -17,8 +17,8 @@
         <input type="number" id="id" placeholder="Enter your id:">
         <button onclick="fetchHello()">Fetch Hello</button>
         <pre id="helloResult"></pre>
-        <input id="ask" placeholder="Promt here: ">
-        <button onclick="fetchask()">Ask</button>
+        <input id="ask" placeholder="Prompt here: ">
+        <button onclick="fetchAsk()">Ask</button>
         <pre id="ans"></pre>
     </div>
 
@@ -51,22 +51,22 @@
                 document.getElementById('helloResult').innerText = 'Please enter a valid ID';
             }
         }
-        function fetchask() {
-            const pr=document.getElementById('ask').value;
-            if(pr){
-                fetch('${baseurl}/ask/${pr}')
+
+        function fetchAsk() {
+            const pr = document.getElementById('ask').value;
+            if (pr) {
+                fetch(`${baseUrl}/ask/${pr}`)
                     .then(response => response.json())
-                .then(data => {
-                    document.getElementById('ans').innertext = JSON.stringify(data,null,2);
-                })
-                .catch(error => {
-                    document.getElementById('ans').innerText = 'Errror' ;
-                });
+                    .then(data => {
+                        document.getElementById('ans').innerText = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        document.getElementById('ans').innerText = 'Error fetching ask endpoint';
+                    });
+            } else {
+                document.getElementById('ans').innerText = 'Please enter a prompt';
             }
-            else{
-                document.getElementById('ans').innerText = 'Nothing' ;
-            }
-    }
+        }
     </script>
 </body>
 </html>
