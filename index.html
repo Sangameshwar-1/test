@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +18,9 @@
         <input type="number" id="id" placeholder="Enter your id:">
         <button onclick="fetchHello()">Fetch Hello</button>
         <pre id="helloResult"></pre>
+    </div>
+    <div>
+        <h2>Ask Endpoint</h2>
         <input id="ask" placeholder="Prompt here: ">
         <button onclick="fetchAsk()">Ask</button>
         <pre id="ans"></pre>
@@ -27,12 +31,17 @@
 
         function fetchRoot() {
             fetch(`${baseUrl}/`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     document.getElementById('rootResult').innerText = JSON.stringify(data, null, 2);
                 })
                 .catch(error => {
-                    document.getElementById('rootResult').innerText = 'Error fetching root endpoint';
+                    document.getElementById('rootResult').innerText = `Error fetching root endpoint: ${error}`;
                 });
         }
 
@@ -40,12 +49,17 @@
             const id = document.getElementById('id').value;
             if (id) {
                 fetch(`${baseUrl}/hello/${id}`)
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         document.getElementById('helloResult').innerText = JSON.stringify(data, null, 2);
                     })
                     .catch(error => {
-                        document.getElementById('helloResult').innerText = 'Error fetching hello endpoint';
+                        document.getElementById('helloResult').innerText = `Error fetching hello endpoint: ${error}`;
                     });
             } else {
                 document.getElementById('helloResult').innerText = 'Please enter a valid ID';
@@ -56,12 +70,17 @@
             const pr = document.getElementById('ask').value;
             if (pr) {
                 fetch(`${baseUrl}/ask/${pr}`)
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         document.getElementById('ans').innerText = JSON.stringify(data, null, 2);
                     })
                     .catch(error => {
-                        document.getElementById('ans').innerText = 'Error fetching ask endpoint';
+                        document.getElementById('ans').innerText = `Error fetching ask endpoint: ${error}`;
                     });
             } else {
                 document.getElementById('ans').innerText = 'Please enter a prompt';
