@@ -54,7 +54,7 @@
         function fetchask() {
             const pr=document.getElementById('ask').value;
             if(pr){
-                fetch('${baseurl}/ask{pr}')
+                fetch('${baseurl}/ask/${pr}')
                     .then(response => response.json())
                 .then(data => {
                     document.getElementById('ans').innertext = JSON.stringify(data,null,2);
