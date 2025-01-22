@@ -1,6 +1,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import openai
 
 app = FastAPI()
 
@@ -26,4 +27,17 @@ def say_hello_by_id(id: int):
 def say_datails(id: int):
     details={1:["sangameshwar","sale"]}
     deatail=details.get(id,"guest")
-    return deatail 
+    return deatail
+openai.api_key = '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
+'
+@app.get("/ask")
+def ask(pr):
+    response = openai.Completion.create(
+    engine="text-davinci-003",
+    prompt=pr,
+    max_tokens=5
+    )
+    return response.choices[0].text.strip()
+    
+    
+    
