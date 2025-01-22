@@ -31,11 +31,11 @@ def say_details(id: int):
 
 openai.api_key = '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'
 @app.get("/ask/{pr}")
-def ask(ask: str):
+def ask(pr: str):
     try:
         response = openai.Completion.create(
             engine="text-davinci-003",
-            prompt=ask,
+            prompt=pr,
             max_tokens=5
         )
         return response.choices[0].text.strip()
