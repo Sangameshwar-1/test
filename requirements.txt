@@ -2,4 +2,4 @@ fastapi
 fastapi-cors
 uvicorn[standard]
 twilio
-openai
+openai==0.28
