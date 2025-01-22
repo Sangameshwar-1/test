@@ -28,8 +28,7 @@ def say_datails(id: int):
     details={1:["sangameshwar","sale"]}
     deatail=details.get(id,"guest")
     return deatail
-openai.api_key = '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
-'
+openai.api_key = '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'
 @app.get("/ask")
 def ask(pr):
     response = openai.Completion.create(
