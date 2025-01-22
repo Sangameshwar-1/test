@@ -29,7 +29,7 @@ def say_details(id: int):
     detail = details.get(id, "guest")
     return detail
 
-openai.api_key = 'sk-svcacct-dzhtMKbUXFGAH77Z6_uxjGWV5q3COire3jGHXLy6ChwH6UwWPwNt3k9UXPdtT3BlbkFJ1SGKbrh023p9B7gZzYhDDVg6ZrzgMuLeyjfYRxRNsuYC6nlUtYR-CKbVVkMA'
+openai.api_key = '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'
 
 @app.get("/ask/{pr}")
 def ask(pr: str):
