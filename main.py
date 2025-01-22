@@ -30,14 +30,17 @@ def say_details(id: int):
     return detail
 
 openai.api_key = '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'
+
 @app.get("/ask/{pr}")
 def ask(pr: str):
     try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=pr,
-            max_tokens=5
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": pr}
+            ]
         )
-        return response.choices[0].text.strip()
+        return response.choices[0].message['content'].strip()
     except Exception as e:
         return {"error": str(e)}
