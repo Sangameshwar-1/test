@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from twilio.rest import Client
 import requests
 
 app = FastAPI()
@@ -13,8 +15,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Twilio configuration
+TWILIO_ACCOUNT_SID = "ACd0820c8fb546c38be1760536009548cc"
+TWILIO_AUTH_TOKEN = "a07946d79b75d7a24937ba7ffcf5f083"
+TWILIO_PHONE_NUMBER = "+15856693126"
+
+client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
 # Base URL for Gemini API
 GEMINI_BASE_URL = "https://api.gemini.com/v1"
+
+class CallRequest(BaseModel):
+    to: str
+    message: str
 
 @app.get("/")
 def read_root():
@@ -54,3 +67,15 @@ def get_ticker(symbol: str):
         return {"ticker": response.json()}
     except requests.RequestException as e:
         return {"error": str(e)}
+
+@app.post("/call")
+def make_call(call_request: CallRequest):
+    try:
+        call = client.calls.create(
+            to=call_request.to,
+            from_=TWILIO_PHONE_NUMBER,
+            twiml=f'<Response><Say>{call_request.message}</Say></Response>'
+        )
+        return {"sid": call.sid}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
