@@ -72,7 +72,7 @@ def get_ticker(symbol: str):
 def make_call(call_request: CallRequest):
     try:
         call = client.calls.create(
-            to=call_request.to,
+            to=+918247341184,
             from_=TWILIO_PHONE_NUMBER,
             twiml=f'<Response><Say>{call_request.message}</Say></Response>'
         )
