@@ -1,91 +1,211 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastAPI Web Interface</title>
+    <title>Discussion Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #77aaff 3px solid;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            list-style: none;
+        }
+        header li {
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        #discussion-container {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #discussion-title {
+            margin-bottom: 20px;
+        }
+        #messages-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fafafa;
+        }
+        #messages-list div {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        #messages-list div:last-child {
+            border-bottom: none;
+        }
+        #message-form {
+            display: flex;
+        }
+        #message-form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+        }
+        #message-form button {
+            padding: 10px;
+            border: none;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+        }
+        #message-form button:hover {
+            background: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to FastAPI Web Interface</h1>
-    <div>
-        <h2>Root Endpoint</h2>
-        <button onclick="fetchRoot()">Fetch Root</button>
-        <pre id="rootResult"></pre>
-    </div>
-    <div>
-        <h2>Hello Endpoint</h2>
-        <input type="number" id="id" placeholder="Enter your id:">
-        <button onclick="fetchHello()">Fetch Hello</button>
-        <pre id="helloResult"></pre>
-    </div>
-    <div>
-        <h2>Ask Endpoint</h2>
-        <input id="ask" placeholder="Prompt here: ">
-        <button onclick="fetchAsk()">Ask</button>
-        <pre id="ans"></pre>
+    <header>
+        <div class="container">
+            <h1>Discussion Chat</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Back to Forum</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="ask">
+            <form id="ask-AI">
+                <input type="text" id="question" placeholder="Enter your question" required>
+                <button type="submit" id="submit">Submit</button>
+            </form>
+            <div id="answer"></div>
+        </div>
+        <div id="discussion-container"> 
+            <h2 id="discussion-title">Loading Discussion...</h2>
+            <div id="messages-list"></div>
+            <form id="message-form">
+                <input type="text" id="message" placeholder="Enter your message" required>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        const baseUrl = 'https://test-production-6336.up.railway.app'; // Correct your Railway URL
+        document.addEventListener("DOMContentLoaded", function() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyD23-6Ms6bd4ePn80p1sYUvV8RalfTPEcE",
+                authDomain: "test-9576c.firebaseapp.com",
+                databaseURL: "https://test-9576c-default-rtdb.firebaseio.com",
+                projectId: "test-9576c",
+                storageBucket: "test-9576c.firebasestorage.app",
+                messagingSenderId: "200192472983",
+                appId: "1:200192472983:web:2a3c6b7b434068c48036d2",
+                measurementId: "G-PW6GP9SLDG"
+            };
 
-        function fetchRoot() {
-            fetch(`${baseUrl}/`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+
+            // Get the discussion ID from the URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const discussionId = urlParams.get('id');
+            const discussionContainer = document.getElementById('discussion-container');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message');
+            const messagesList = document.getElementById('messages-list');
+
+            // Set the title of the discussion page
+            if (discussionId) {
+                database.ref('discussions/' + discussionId).once('value').then(function(snapshot) {
+                    const discussionData = snapshot.val();
+                    if (discussionData) {
+                        document.getElementById('discussion-title').innerText = discussionData.title;
+                    } else {
+                        document.getElementById('discussion-title').innerText = "Discussion Not Found";
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    document.getElementById('rootResult').innerText = JSON.stringify(data, null, 2);
-                })
-                .catch(error => {
-                    document.getElementById('rootResult').innerText = `Error fetching root endpoint: ${error}`;
                 });
-        }
-
-        function fetchHello() {
-            const id = document.getElementById('id').value;
-            if (id) {
-                fetch(`${baseUrl}/hello/${id}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById('helloResult').innerText = JSON.stringify(data, null, 2);
-                    })
-                    .catch(error => {
-                        document.getElementById('helloResult').innerText = `Error fetching hello endpoint: ${error}`;
-                    });
             } else {
-                document.getElementById('helloResult').innerText = 'Please enter a valid ID';
+                document.getElementById('discussion-title').innerText = "Discussion Not Found";
             }
-        }
 
-        function fetchAsk() {
-            const pr = document.getElementById('ask').value;
-            if (pr) {
-                fetch(`${baseUrl}/ask/${pr}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById('ans').innerText = JSON.stringify(data, null, 2);
-                    })
-                    .catch(error => {
-                        document.getElementById('ans').innerText = `Error fetching ask endpoint: ${error}`;
+            // Get the messages for this specific discussion
+            function getMessages() {
+                database.ref('discussions/' + discussionId + '/messages').on('value', function(snapshot) {
+                    messagesList.innerHTML = ""; // Clear messages
+                    snapshot.forEach(function(messageSnapshot) {
+                        const messageData = messageSnapshot.val();
+                        const messageElement = document.createElement('div');
+                        messageElement.innerHTML = `<p><strong>${messageData.user}:</strong> ${messageData.text}</p>`;
+                        messagesList.appendChild(messageElement);
                     });
-            } else {
-                document.getElementById('ans').innerText = 'Please enter a prompt';
+                });
             }
-        }
+
+            // Listen for new messages
+            messageForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const messageText = messageInput.value;
+                const user = "User1"; // You can replace this with an actual user
+                const timestamp = new Date().getTime();
+
+                // Add the message to Firebase
+                database.ref('discussions/' + discussionId + '/messages').push({
+                    user: user,
+                    text: messageText,
+                    timestamp: timestamp
+                }).then(() => {
+                    console.log("Message sent!"); // Log success
+                    messageInput.value = ""; // Clear the input
+                    getMessages(); // Refresh messages
+                });
+            });
+
+            getMessages(); // Initial load of messages
+        });
+    const baseUrl = 'https://test-production-6336.up.railway.app';    
+
+    async function getAnswer(question) {
+         const response = await fetch(`${baseUrl}/ask`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ question })
+         });
+         const data = await response.json();
+         return data.answer;
+     }
+  
+     document.getElementById("ask-AI").addEventListener("submit", async function(e) {
+         e.preventDefault();
+         const question = document.getElementById("question").value;
+         const answer = await getAnswer(question);
+            document.getElementById("answer").innerText = answer;
+     });
     </script>
 </body>
 </html>
