@@ -1,5 +1,4 @@
 fastapi
 fastapi-cors
 uvicorn[standard]
-twilio
-openai==0.28
+google-generativeai
