@@ -12,7 +12,8 @@ genai.configure(api_key=GEMINI_API_KEY)
 # Define a request model
 class QuestionRequest(BaseModel):
     prompt: str
-
+async def root():
+    return "hllo"
 # 📌 1. Ask anything to Gemini AI
 @app.post("/ask")
 async def ask_gemini(request: QuestionRequest):
